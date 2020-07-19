@@ -1,0 +1,16 @@
+﻿version: "3.3"
+
+networks:
+  frontend:
+  backend:
+
+services:
+  esbc_web:
+    build:
+      context: ../
+      dockerfile: ./docker/dockerfile
+    networks:
+      - backend
+      - frontend
+    ports:
+      - 5000:80

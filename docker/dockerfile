@@ -1,0 +1,37 @@
+﻿FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS base
+RUN mkdir /app
+WORKDIR /app
+EXPOSE 80/tcp
+
+#estágio 2 - publish
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS dotnet_restore
+WORKDIR /app
+RUN apt-get update -y
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash --debug
+RUN apt-get install nodejs -yq
+COPY "Esbc.sln" "Esbc.sln"
+COPY "__tests__/Esbc.Domain.Tests/Esbc.Domain.Tests.csproj" "__tests__/Esbc.Domain.Tests/Esbc.Domain.Tests.csproj"
+COPY "__tests__/Esbc.Web.Tests/Esbc.Web.Tests.csproj" "__tests__/Esbc.Web.Tests/Esbc.Web.Tests.csproj"
+COPY "src/Esbc.Domain/Esbc.Domain.csproj" "src/Esbc.Domain/Esbc.Domain.csproj"
+COPY "src/Esbc.Web/Esbc.Web.csproj" "src/Esbc.Web/Esbc.Web.csproj"
+RUN dotnet restore "Esbc.sln"
+
+FROM dotnet_restore AS dotnet_code
+WORKDIR /app
+COPY . . 
+
+FROM dotnet_code AS test
+WORKDIR /app
+RUN dotnet test
+
+FROM dotnet_code as publish
+WORKDIR /app
+RUN dotnet build
+RUN dotnet publish -c Release -o dist
+
+FROM base AS final
+WORKDIR /dist
+COPY --from=publish /app/dist .
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_URLS=http://+:80
+ENTRYPOINT ["dotnet", "Esbc.Web.dll"]
