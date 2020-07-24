@@ -2,8 +2,6 @@ using EsbcProducer.Services;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +10,7 @@ namespace EsbcProducer
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
-        public IProducer _producer { get; }
+        public IProducer _producer;
 
         public Worker(ILogger<Worker> logger, IProducer producer)
         {
@@ -22,14 +20,22 @@ namespace EsbcProducer
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _logger.LogInformation($"Worker running at: { DateTimeOffset.Now}");
             while (!stoppingToken.IsCancellationRequested)
             {
-                _logger.LogInformation($"Worker running at: { DateTimeOffset.Now}");
-                await _producer.Send(new
+                try
                 {
-                    message = $"Producing test at {DateTimeOffset.Now}",
-                });
-                await Task.Delay(5000, stoppingToken);
+                    await _producer.Send(new
+                    {
+                        message = $"Producing test at {DateTimeOffset.Now}",
+                    },
+                    stoppingToken).ConfigureAwait(false);
+                    await Task.Delay(5000, stoppingToken).ConfigureAwait(false);
+                }
+                catch (Exception exception)
+                {
+                    _logger.LogError(exception, "Error while sending message");
+                }
             }
         }
     }
