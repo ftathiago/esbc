@@ -8,13 +8,23 @@ volumes:
   rmqdata:
   rmqlog:
 
+networks:
+  esbc_net:
+
 services:
   esbc_producer:
     build:
       context: ../
       dockerfile: ./docker/producer.dockerfile
+    networks:
+      - esbc_net
+    environment:
+      - QUEUE__HOST=kafka1
     ports:
       - 5000:80
+    depends_on:
+      - kafka1
+
   # esbc_consumer:
   #   build:
   #     context: ../
@@ -25,6 +35,8 @@ services:
     hostname: zoo1
     ports:
       - "2181:2181"
+    networks:
+      - esbc_net
     environment:
       ZOO_MY_ID: 1
       ZOO_PORT: 2181
@@ -38,6 +50,8 @@ services:
     hostname: kafka1
     ports:
       - "9092:9092"
+    networks:
+      - esbc_net
     environment:
       KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka1:19092,LISTENER_DOCKER_EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
@@ -53,6 +67,8 @@ services:
   rabbitmq:
     image: rabbitmq:3.8-management
     container_name: rabbitmq
+    networks:
+      - esbc_net
     volumes:
       - rmq:/etc/rabbitmq/
       - rmqdata:/var/lib/rabbitmq/
