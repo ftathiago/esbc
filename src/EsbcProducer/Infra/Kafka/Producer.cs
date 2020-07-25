@@ -1,6 +1,6 @@
-using Confluent.Kafka;
+﻿using Confluent.Kafka;
+using EsbcProducer.Infra.Kafka.Factories;
 using EsbcProducer.Services;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Text.Json;
@@ -12,38 +12,34 @@ namespace EsbcProducer.Infra.Kafka
     public class Producer : IProducer
     {
         private readonly ILogger<Producer> _logger;
-        private readonly string _bootstrapserver;
-        private readonly ProducerConfig _producerConfig;
+        private readonly IProducerProvider _producerProvider;
 
-        public Producer(ILogger<Producer> logger, IConfiguration configuration)
+        public Producer(ILogger<Producer> logger, IProducerProvider producerProvider)
         {
             _logger = logger;
-            _bootstrapserver = configuration["Queue:Host"];
-            _producerConfig = new ProducerConfig
-            {
-                BootstrapServers = $"{_bootstrapserver}:9092",
-                RequestTimeoutMs = 5000,
-            };
+            _producerProvider = producerProvider;
         }
 
-        public async Task Send(object message, CancellationToken stoppingToken)
+        public async Task<bool> Send(string topicName, object message, CancellationToken stoppingToken)
         {
             var json = JsonSerializer.Serialize(message, message.GetType());
-            _logger.LogInformation($"Producing message: {json} to server {_bootstrapserver}");
+            _logger.LogInformation($"Producing message: {json}");
             try
             {
-                using var producer = new ProducerBuilder<Null, string>(_producerConfig).Build();
-                await producer.ProduceAsync(
-                    "test_topic",
+                var producer = _producerProvider.GetProducer();
+                var result = await producer.ProduceAsync(
+                    topicName,
                     new Message<Null, string>
                     {
-                        Value = "{ \"message\":\"Teste\"}"
+                        Value = json,
                     },
-                    stoppingToken).ConfigureAwait(false);
+                    stoppingToken);
+                return result.Status == PersistenceStatus.Persisted;
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Error while trying to send message");
+                return false;
             }
         }
     }
