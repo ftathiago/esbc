@@ -1,4 +1,5 @@
-using EsbcProducer.Services;
+﻿using EsbcProducer.Services;
+using EsbcProducer.Worker;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -22,7 +23,7 @@ namespace EsbcProducer
                 .AddControllers();
             services
                 .AddTransient<IProducer, EsbcProducer.Infra.Kafka.Producer>()
-                .AddHostedService<Worker>();
+                .AddHostedService<ProducerWorker>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
