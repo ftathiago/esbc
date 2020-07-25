@@ -6,6 +6,8 @@
         "hsts",
         "rabbitmq",
         "use",
-        "use hsts"
-    ]
+        "use hsts",
+        "xunit"
+    ],
+    "files.encoding": "utf8bom"
 }
