@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System;
 
-namespace EsbcProducer.Infra.Kafka.Factories.Impl
+namespace EsbcProducer.Infra.Kafka.Providers.Impl
 {
     public class ProducerProvider :
         IProducerProvider,

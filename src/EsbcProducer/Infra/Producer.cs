@@ -1,5 +1,4 @@
-﻿using Confluent.Kafka;
-using EsbcProducer.Infra.Kafka.Factories;
+﻿using EsbcProducer.Infra.Providers;
 using EsbcProducer.Repositories;
 using Microsoft.Extensions.Logging;
 using System;
@@ -7,7 +6,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace EsbcProducer.Infra.Kafka
+namespace EsbcProducer.Infra
 {
     public class Producer : IProducer
     {
@@ -22,19 +21,12 @@ namespace EsbcProducer.Infra.Kafka
 
         public async Task<bool> Send(string topicName, object message, CancellationToken stoppingToken)
         {
-            var json = JsonSerializer.Serialize(message, message.GetType());
-            _logger.LogInformation($"Producing message: {json}");
+            var serializedMessage = JsonSerializer.Serialize(message, message.GetType());
+            _logger.LogInformation($"Producing message: {serializedMessage}");
             try
             {
-                var producer = _producerProvider.GetProducer();
-                var result = await producer.ProduceAsync(
-                    topicName,
-                    new Message<Null, string>
-                    {
-                        Value = json,
-                    },
-                    stoppingToken);
-                return result.Status == PersistenceStatus.Persisted;
+                var producer = _producerProvider.GetProducer(QueueMechanism.Kafka);
+                return await producer.Send(topicName, serializedMessage, stoppingToken);
             }
             catch (Exception e)
             {

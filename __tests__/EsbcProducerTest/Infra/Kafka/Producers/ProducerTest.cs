@@ -1,29 +1,29 @@
-﻿using System;
-using Confluent.Kafka;
+﻿using Confluent.Kafka;
 using EsbcProducer.Fixtures;
-using EsbcProducer.Infra.Kafka;
-using EsbcProducer.Infra.Kafka.Factories;
+using EsbcProducer.Infra.Kafka.Producers.Impl;
+using EsbcProducer.Infra.Kafka.Providers;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace EsbcProducerTest.Infra.Kafka
+namespace EsbcProducerTest.Infra.Kafka.Producers
 {
     public class ProducerTest : IClassFixture<MessageFixture>, IDisposable
     {
         private const string TopicName = "topic_name";
         private readonly MessageFixture _message;
-        private readonly Mock<ILogger<Producer>> _logger;
+        private readonly Mock<ILogger<ProducerWrapped>> _logger;
         private readonly Mock<IProducer<Null, string>> _producer;
         private readonly Mock<IProducerProvider> _producerProvider;
 
         public ProducerTest(MessageFixture message)
         {
             _message = message;
-            _logger = new Mock<ILogger<Producer>>();
+            _logger = new Mock<ILogger<ProducerWrapped>>();
             _producer = new Mock<IProducer<Null, string>>(MockBehavior.Strict);
             _producerProvider = new Mock<IProducerProvider>(MockBehavior.Strict);
         }
@@ -37,7 +37,7 @@ namespace EsbcProducerTest.Infra.Kafka
         [Fact]
         public void ShouldCreateProducer()
         {
-            var producer = new Producer(_logger.Object, _producerProvider.Object);
+            var producer = new ProducerWrapped(_logger.Object, _producerProvider.Object);
 
             producer.Should().NotBeNull();
         }
@@ -46,7 +46,6 @@ namespace EsbcProducerTest.Infra.Kafka
         public async Task ShouldReturnFalseWhenMessageIsNotPersisted()
         {
             var objJson = _message.GetMessageString();
-            var obj = _message.GetMessageObject();
             var message = new Message<Null, string> { Value = objJson };
             var cancellationToken = default(CancellationToken);
             var sentMessage = default(Message<Null, string>);
@@ -59,9 +58,9 @@ namespace EsbcProducerTest.Infra.Kafka
                 .Callback<string, Message<Null, string>, CancellationToken>((tn, message, c) => sentMessage = message)
                 .ReturnsAsync(GetDeliveryNotPersisted())
                 .Verifiable();
-            var producer = new Producer(_logger.Object, _producerProvider.Object);
+            var producer = new ProducerWrapped(_logger.Object, _producerProvider.Object);
 
-            var messageSent = await producer.Send(TopicName, obj, CancellationToken.None);
+            var messageSent = await producer.Send(TopicName, objJson, CancellationToken.None);
 
             sentMessage.Value.Should().Be(objJson);
             messageSent.Should().BeFalse();
@@ -71,7 +70,6 @@ namespace EsbcProducerTest.Infra.Kafka
         public async Task ShouldReturnTrueWhenMessageIsPersisted()
         {
             var objJson = _message.GetMessageString();
-            var obj = _message.GetMessageObject();
             var message = new Message<Null, string> { Value = objJson };
             var cancellationToken = default(CancellationToken);
             var sentMessage = default(Message<Null, string>);
@@ -84,9 +82,9 @@ namespace EsbcProducerTest.Infra.Kafka
                 .Callback<string, Message<Null, string>, CancellationToken>((tn, message, c) => sentMessage = message)
                 .ReturnsAsync(GetDeliveryPersisted())
                 .Verifiable();
-            var producer = new Producer(_logger.Object, _producerProvider.Object);
+            var producer = new ProducerWrapped(_logger.Object, _producerProvider.Object);
 
-            var messageWasSent = await producer.Send(TopicName, obj, CancellationToken.None);
+            var messageWasSent = await producer.Send(TopicName, objJson, CancellationToken.None);
 
             sentMessage.Value.Should().Be(objJson);
             messageWasSent.Should().BeTrue();
@@ -95,6 +93,7 @@ namespace EsbcProducerTest.Infra.Kafka
         [Fact]
         public async Task ShouldReturnFalseWhenThrowsAnyException()
         {
+            var objJson = _message.GetMessageString();
             var obj = _message.GetMessageObject();
             var cancellationToken = default(CancellationToken);
             _producerProvider
@@ -105,9 +104,9 @@ namespace EsbcProducerTest.Infra.Kafka
                 .Setup(p => p.ProduceAsync(TopicName, It.IsAny<Message<Null, string>>(), cancellationToken))
                 .ThrowsAsync(new Exception())
                 .Verifiable();
-            var producer = new Producer(_logger.Object, _producerProvider.Object);
+            var producer = new ProducerWrapped(_logger.Object, _producerProvider.Object);
 
-            var messageSent = await producer.Send(TopicName, obj, CancellationToken.None);
+            var messageSent = await producer.Send(TopicName, objJson, CancellationToken.None);
 
             messageSent.Should().BeFalse();
         }

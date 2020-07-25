@@ -1,11 +1,11 @@
-﻿using System;
-using EsbcProducer.Infra.Kafka.Factories.Impl;
+﻿using EsbcProducer.Infra.Kafka.Providers.Impl;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Moq;
+using System;
 using Xunit;
 
-namespace EsbcProducerTest.Infra.Kafka.Factories
+namespace EsbcProducerTest.Infra.Kafka.Providers
 {
     public class ProducerProviderTest : IDisposable
     {

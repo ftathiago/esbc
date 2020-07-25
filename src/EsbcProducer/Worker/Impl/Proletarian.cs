@@ -21,14 +21,13 @@ namespace EsbcProducer.Worker.Impl
                 return;
             }
 
-            await _producer
-                .Send(
-                    "test_topic",
-                    new
-                    {
-                        message = $"Producing test at {DateTimeOffset.Now}",
-                    },
-                    stoppingToken);
+            await _producer.Send(
+                "test_topic",
+                new
+                {
+                    message = $"Producing test at {DateTimeOffset.Now}",
+                },
+                stoppingToken);
         }
     }
 }
