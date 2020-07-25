@@ -1,6 +1,6 @@
 ﻿using Confluent.Kafka;
 using EsbcProducer.Infra.Kafka.Factories;
-using EsbcProducer.Services;
+using EsbcProducer.Repositories;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Text.Json;

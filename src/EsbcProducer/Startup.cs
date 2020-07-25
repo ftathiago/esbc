@@ -1,4 +1,4 @@
-﻿using EsbcProducer.Services;
+﻿using EsbcProducer.Repositories;
 using EsbcProducer.Worker;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using EsbcProducer.Services;
+﻿using EsbcProducer.Repositories;
 using EsbcProducer.Worker.Impl;
 using FluentAssertions;
 using Moq;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace EsbcProducerTest.Worker
