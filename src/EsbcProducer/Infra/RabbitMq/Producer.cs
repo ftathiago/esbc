@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using EsbcProducer.Infra.Wrappers;
-using EsbcProducer.Repositories;
 
 namespace EsbcProducer.Infra.RabbitMq
 {

@@ -1,9 +1,8 @@
-﻿using System.Text;
+﻿using EsbcProducer.Infra.Configurations;
+using RabbitMQ.Client;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using EsbcProducer.Infra.Configurations;
-using Microsoft.Extensions.Options;
-using RabbitMQ.Client;
 
 namespace EsbcProducer.Infra.RabbitMq.Producers.Impl
 {
@@ -11,9 +10,9 @@ namespace EsbcProducer.Infra.RabbitMq.Producers.Impl
     {
         private readonly QueueConfiguration _queueConfiguration;
 
-        public ProducerWrapped(IOptions<QueueConfiguration> queueConfiguration)
+        public ProducerWrapped(QueueConfiguration queueConfiguration)
         {
-            _queueConfiguration = queueConfiguration.Value;
+            _queueConfiguration = queueConfiguration;
         }
 
         public Task<bool> Send(string queueName, string payload, CancellationToken stoppingToken = default)
@@ -23,9 +22,9 @@ namespace EsbcProducer.Infra.RabbitMq.Producers.Impl
                 var connectionFactory = new ConnectionFactory
                 {
                     HostName = _queueConfiguration.HostName,
-                    Port = 5672,
-                    UserName = "guest",
-                    Password = "guest",
+                    Port = _queueConfiguration.Port,
+                    UserName = _queueConfiguration.User,
+                    Password = _queueConfiguration.Password,
                 };
 
                 using var connection = connectionFactory.CreateConnection();

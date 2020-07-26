@@ -13,17 +13,12 @@ namespace EsbcProducerTest.Infra.Providers
     public class ProducerProviderTest : IDisposable
     {
         private readonly IKafkaProducerWrapped _kafkaProducerStub;
-        private readonly Lazy<IKafkaProducerWrapped> _kafkaProducerLazy;
         private readonly IRabbitMqProducerWrapped _rabbitProducerStub;
-        private readonly Lazy<IRabbitMqProducerWrapped> _rabbitProducerLazy;
 
         public ProducerProviderTest()
         {
             _kafkaProducerStub = new Mock<IKafkaProducerWrapped>(MockBehavior.Strict).Object;
-            _kafkaProducerLazy = new Lazy<IKafkaProducerWrapped>(() => _kafkaProducerStub);
-
             _rabbitProducerStub = new Mock<IRabbitMqProducerWrapped>(MockBehavior.Strict).Object;
-            _rabbitProducerLazy = new Lazy<IRabbitMqProducerWrapped>(() => _rabbitProducerStub);
         }
 
         public void Dispose()
@@ -72,7 +67,7 @@ namespace EsbcProducerTest.Infra.Providers
 
         private ProducerProvider CreateProducerProvider() =>
             new ProducerProvider(
-                _kafkaProducerLazy,
-                _rabbitProducerLazy);
+                _kafkaProducerStub,
+                _rabbitProducerStub);
     }
 }

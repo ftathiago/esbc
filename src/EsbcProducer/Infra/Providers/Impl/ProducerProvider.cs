@@ -11,13 +11,13 @@ namespace EsbcProducer.Infra.Providers.Impl
         private readonly Dictionary<QueueMechanism, Func<IProducerWrapped>> _producers;
 
         public ProducerProvider(
-            Lazy<IKafkaProducerWrapped> kafkaProvider,
-            Lazy<IRabbitMqProducerWrapped> rabbitMqProvider)
+            IKafkaProducerWrapped kafkaProvider,
+            IRabbitMqProducerWrapped rabbitMqProvider)
         {
             _producers = new Dictionary<QueueMechanism, Func<IProducerWrapped>>
             {
-                { QueueMechanism.Kafka, () => kafkaProvider.Value },
-                { QueueMechanism.RabbitMq, () => rabbitMqProvider.Value },
+                { QueueMechanism.Kafka, () => kafkaProvider },
+                { QueueMechanism.RabbitMq, () => rabbitMqProvider },
             };
         }
 
