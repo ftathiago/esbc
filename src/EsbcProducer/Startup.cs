@@ -1,6 +1,5 @@
-﻿using EsbcProducer.Infra.Extensions;
+﻿using EsbcProducer.Extensions;
 using EsbcProducer.Worker;
-using EsbcProducer.Worker.Impl;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -23,8 +22,7 @@ namespace EsbcProducer
             services
                 .AddControllers();
             services
-                .AddInfraDependencies(Configuration)
-                .AddTransient<IProletarian, Proletarian>()
+                .AddDependencies(Configuration)
                 .AddHostedService<ProducerWorker>();
         }
 
