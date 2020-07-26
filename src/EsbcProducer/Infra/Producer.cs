@@ -1,4 +1,5 @@
-﻿using EsbcProducer.Infra.Providers;
+﻿using EsbcProducer.Infra.Configurations;
+using EsbcProducer.Infra.Providers;
 using EsbcProducer.Repositories;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,11 +13,16 @@ namespace EsbcProducer.Infra
     {
         private readonly ILogger<Producer> _logger;
         private readonly IProducerProvider _producerProvider;
+        private readonly QueueMechanism _queueMechanism;
 
-        public Producer(ILogger<Producer> logger, IProducerProvider producerProvider)
+        public Producer(
+            ILogger<Producer> logger,
+            IProducerProvider producerProvider,
+            QueueConfiguration queueConfiguration)
         {
             _logger = logger;
             _producerProvider = producerProvider;
+            _queueMechanism = queueConfiguration.QueueMechanism;
         }
 
         public async Task<bool> Send(string topicName, object message, CancellationToken stoppingToken)
@@ -25,7 +31,7 @@ namespace EsbcProducer.Infra
             _logger.LogInformation($"Producing message: {serializedMessage}");
             try
             {
-                var producer = _producerProvider.GetProducer(QueueMechanism.Kafka);
+                var producer = _producerProvider.GetProducer(_queueMechanism);
                 return await producer.Send(topicName, serializedMessage, stoppingToken);
             }
             catch (Exception e)

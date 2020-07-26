@@ -33,6 +33,8 @@ namespace EsbcProducer.Infra.Configurations
             {
                 HostName = configuration["QueueConfiguration:HostName"] ?? "localhost",
                 Port = port > 0 ? port : 9092,
+                User = configuration["QueueConfiguration:User"],
+                Password = configuration["QueueConfiguration:Password"],
                 QueueMechanism = configuration["QueueConfiguration:QueueMechanism"].Parse<QueueMechanism>(),
                 KafkaConfiguration = KafkaConfiguration.From(configuration),
             };
