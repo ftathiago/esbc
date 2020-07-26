@@ -3,5 +3,6 @@
 namespace EsbcProducer.Infra.Kafka.Producers
 {
     public interface IKafkaProducerWrapped : IProducerWrapped
-    { }
+    {
+    }
 }
