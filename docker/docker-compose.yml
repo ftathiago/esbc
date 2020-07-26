@@ -19,16 +19,17 @@ services:
     networks:
       - esbc_net
     environment:
-      - QUEUE__HOST=kafka1
+      - QueueConfiguration__HostName=127.0.0.1
+      - QueueConfiguration__Port=8080
+      - QueueConfiguration__User=admin
+      - QueueConfiguration__Password=admin
+      - QueueConfiguration__QueueMechanism=RabbitMq
+      - QueueConfiguration__KafkaConfiguration__RequestTimeoutMs=5000
     ports:
       - 5000:80
     depends_on:
       - kafka1
-
-  # esbc_consumer:
-  #   build:
-  #     context: ../
-  #     dockerfile: ./docker/.dockerfile-consumer
+      - rabbitmq
 
   zoo1:
     image: zookeeper:3.4.9
@@ -66,6 +67,7 @@ services:
 
   rabbitmq:
     image: rabbitmq:3.8-management
+    hostname: rabbitmq
     container_name: rabbitmq
     networks:
       - esbc_net
