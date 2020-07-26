@@ -1,10 +1,11 @@
-﻿using System;
-using EsbcProducer.Infra;
+﻿using EsbcProducer.Infra;
 using EsbcProducer.Infra.Kafka.Producers;
 using EsbcProducer.Infra.Providers.Impl;
+using EsbcProducer.Infra.RabbitMq.Producers;
 using EsbcProducer.Infra.Wrappers;
 using FluentAssertions;
 using Moq;
+using System;
 using Xunit;
 
 namespace EsbcProducerTest.Infra.Providers
@@ -13,11 +14,16 @@ namespace EsbcProducerTest.Infra.Providers
     {
         private readonly IKafkaProducerWrapped _kafkaProducerStub;
         private readonly Lazy<IKafkaProducerWrapped> _kafkaProducerLazy;
+        private readonly IRabbitMqProducerWrapped _rabbitProducerStub;
+        private readonly Lazy<IRabbitMqProducerWrapped> _rabbitProducerLazy;
 
         public ProducerProviderTest()
         {
             _kafkaProducerStub = new Mock<IKafkaProducerWrapped>(MockBehavior.Strict).Object;
             _kafkaProducerLazy = new Lazy<IKafkaProducerWrapped>(() => _kafkaProducerStub);
+
+            _rabbitProducerStub = new Mock<IRabbitMqProducerWrapped>(MockBehavior.Strict).Object;
+            _rabbitProducerLazy = new Lazy<IRabbitMqProducerWrapped>(() => _rabbitProducerStub);
         }
 
         public void Dispose()
@@ -26,14 +32,13 @@ namespace EsbcProducerTest.Infra.Providers
         }
 
         [Fact]
-        public void ShouldThrowExceptionWhenMechanismNotFound()
+        public void ShouldThrowExceptionWhenMechanismIsUnknown()
         {
             // Given
-            const QueueMechanism unknownQueueMechanism = (QueueMechanism)10;
-            var producerProvider = new ProducerProvider(_kafkaProducerLazy);
+            var producerProvider = CreateProducerProvider();
 
             // When
-            Func<IProducerWrapped> act = () => producerProvider.GetProducer(unknownQueueMechanism);
+            Func<IProducerWrapped> act = () => producerProvider.GetProducer(QueueMechanism.Unknown);
 
             // Then
             act.Should().Throw<ArgumentException>();
@@ -43,7 +48,7 @@ namespace EsbcProducerTest.Infra.Providers
         public void ShouldReturnKafkaWrappedProducer()
         {
             // Given
-            var producerProvider = new ProducerProvider(_kafkaProducerLazy);
+            var producerProvider = CreateProducerProvider();
 
             // When
             var producer = producerProvider.GetProducer(QueueMechanism.Kafka);
@@ -51,5 +56,23 @@ namespace EsbcProducerTest.Infra.Providers
             // Then
             producer.Should().Be(_kafkaProducerStub);
         }
+
+        [Fact]
+        public void ShouldReturnRabbitMqWrappedProducer()
+        {
+            // Given
+            var producerProvider = CreateProducerProvider();
+
+            // When
+            var producer = producerProvider.GetProducer(QueueMechanism.RabbitMq);
+
+            // Then
+            producer.Should().Be(_rabbitProducerStub);
+        }
+
+        private ProducerProvider CreateProducerProvider() =>
+            new ProducerProvider(
+                _kafkaProducerLazy,
+                _rabbitProducerLazy);
     }
 }

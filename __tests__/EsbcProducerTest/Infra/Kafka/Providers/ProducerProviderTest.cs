@@ -1,4 +1,5 @@
-﻿using EsbcProducer.Infra.Kafka.Providers.Impl;
+﻿using EsbcProducer.Infra.Configurations;
+using EsbcProducer.Infra.Kafka.Providers.Impl;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Moq;
@@ -9,38 +10,47 @@ namespace EsbcProducerTest.Infra.Kafka.Providers
 {
     public class ProducerProviderTest : IDisposable
     {
-        private readonly Mock<IConfiguration> _configuration;
+        private readonly QueueConfiguration _configuration;
 
         public ProducerProviderTest()
         {
-            _configuration = new Mock<IConfiguration>(MockBehavior.Strict);
+            _configuration = new QueueConfiguration();
         }
 
         public void Dispose()
         {
-            _configuration.Verify();
+            Mock.VerifyAll();
         }
 
         [Fact]
-        public void ShouldThrowsWhenConfigurationIsInvalid()
+        public void ShouldThrowExceptionWhenHostIsEmpty()
         {
-            _configuration
-                    .Setup(c => c["Queue:Host"])
-                    .Returns(string.Empty);
+            _configuration.HostName = string.Empty;
             var provider = default(ProducerProvider);
 
-            Action act = () => provider = new ProducerProvider(_configuration.Object);
+            Action act = () => provider = new ProducerProvider(_configuration);
 
-            act.Should().Throw<ArgumentException>();
+            act.Should().ThrowExactly<ArgumentException>();
+        }
+
+        [Fact]
+        public void ShouldThrowExceptionWhenPortIsEmpty()
+        {
+            _configuration.HostName = "localhost";
+            _configuration.Port = 0;
+            var provider = default(ProducerProvider);
+
+            Action act = () => provider = new ProducerProvider(_configuration);
+
+            act.Should().ThrowExactly<ArgumentException>();
         }
 
         [Fact]
         public void ShouldReturnSameProducerInstance()
         {
-            _configuration
-                .Setup(c => c["Queue:Host"])
-                .Returns("localhost");
-            using var provider = new ProducerProvider(_configuration.Object);
+            _configuration.HostName = "localhost";
+            _configuration.Port = 9092;
+            using var provider = new ProducerProvider(_configuration);
 
             using var instance1 = provider.GetProducer();
             using var instance2 = provider.GetProducer();
