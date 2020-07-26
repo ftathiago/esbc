@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using EsbcProducer.Fixtures;
 using EsbcProducer.Infra;
+using EsbcProducer.Infra.Configurations;
 using EsbcProducer.Infra.Providers;
 using EsbcProducer.Infra.Wrappers;
 using FluentAssertions;
@@ -18,6 +19,7 @@ namespace EsbcProducerTest.Infra
         private readonly Mock<ILogger<Producer>> _logger;
         private readonly Mock<IProducerProvider> _producerProvider;
         private readonly Mock<IProducerWrapped> _producer;
+        private readonly QueueConfiguration _configuration;
         private readonly MessageFixture _messageFixture;
 
         public ProducerTest(MessageFixture messageFixture)
@@ -25,6 +27,7 @@ namespace EsbcProducerTest.Infra
             _logger = new Mock<ILogger<Producer>>();
             _producerProvider = new Mock<IProducerProvider>(MockBehavior.Strict);
             _producer = new Mock<IProducerWrapped>(MockBehavior.Strict);
+            _configuration = new QueueConfiguration();
             _messageFixture = messageFixture;
         }
 
@@ -47,7 +50,10 @@ namespace EsbcProducerTest.Infra
                 .Setup(pp => pp.GetProducer(It.IsAny<QueueMechanism>()))
                 .Returns(_producer.Object)
                 .Verifiable();
-            var producer = new Producer(_logger.Object, _producerProvider.Object);
+            var producer = new Producer(
+                _logger.Object,
+                _producerProvider.Object,
+                _configuration);
 
             // When
             var messageWasSent = await producer.Send(TopicName, messageObject, stoppingToken);
@@ -70,7 +76,10 @@ namespace EsbcProducerTest.Infra
                 .Setup(pp => pp.GetProducer(It.IsAny<QueueMechanism>()))
                 .Returns(_producer.Object)
                 .Verifiable();
-            var producer = new Producer(_logger.Object, _producerProvider.Object);
+            var producer = new Producer(
+                _logger.Object,
+                _producerProvider.Object,
+                _configuration);
 
             // When
             var messageWasSent = await producer.Send(TopicName, messageObject, stoppingToken);
@@ -90,7 +99,10 @@ namespace EsbcProducerTest.Infra
                 .Setup(p => p.Send(TopicName, objJson, stoppingToken))
                 .ThrowsAsync(new Exception())
                 .Verifiable();
-            var producer = new Producer(_logger.Object, _producerProvider.Object);
+            var producer = new Producer(
+                _logger.Object,
+                _producerProvider.Object,
+                _configuration);
 
             // When
             var messageWasSent = await producer.Send(TopicName, messageObject, stoppingToken);
