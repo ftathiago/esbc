@@ -4,6 +4,6 @@
     {
         Unknown,
         RabbitMq,
-        Kafka
+        Kafka,
     }
 }
