@@ -1,5 +1,5 @@
 ﻿using EsbcProducer.Repositories;
-using EsbcProducer.Worker.Impl;
+using EsbcProducer.Services.Impl;
 using FluentAssertions;
 using Moq;
 using System;
@@ -32,18 +32,18 @@ namespace EsbcProducerTest.Worker
                 .Setup(p => p.Send(It.IsAny<string>(), It.IsAny<object>(), cancellationToken))
                 .ReturnsAsync(true)
                 .Verifiable();
-            var proletarian = new MessageProducer(_producer.Object);
+            var messageProducer = new MessageProducer(_producer.Object);
 
-            await proletarian.DoWork(cancellationToken);
+            await messageProducer.DoWork(cancellationToken);
         }
 
         [Fact]
         public async Task ShouldNotProduceMessageWhenCancellationWasRequestedAsync()
         {
             var cancellationToken = new CancellationToken(Canceled);
-            var proletarian = new MessageProducer(_producer.Object);
+            var messageProducer = new MessageProducer(_producer.Object);
 
-            await proletarian.DoWork(cancellationToken);
+            await messageProducer.DoWork(cancellationToken);
         }
 
         [Fact]
@@ -54,9 +54,9 @@ namespace EsbcProducerTest.Worker
                 .Setup(p => p.Send(It.IsAny<string>(), It.IsAny<object>(), cancellationToken))
                 .ThrowsAsync(new Exception())
                 .Verifiable();
-            var proletarian = new MessageProducer(_producer.Object);
+            var messageProducer = new MessageProducer(_producer.Object);
 
-            Func<Task> act = async () => await proletarian.DoWork(cancellationToken);
+            Func<Task> act = async () => await messageProducer.DoWork(cancellationToken);
 
             act.Should().Throw<Exception>();
         }
