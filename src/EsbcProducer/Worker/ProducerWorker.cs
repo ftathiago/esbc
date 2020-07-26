@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using EsbcProducer.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -31,7 +32,7 @@ namespace EsbcProducer.Worker
                 }
                 catch (Exception exception)
                 {
-                    _logger.LogError(exception, "A not handled error occurs. Reestarting all services");
+                    _logger.LogError(exception, $"A not handled error occurs. Reestarting {nameof(ProducerWorker)}");
                 }
             }
         }
