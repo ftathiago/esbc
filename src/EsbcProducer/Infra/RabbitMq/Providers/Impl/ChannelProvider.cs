@@ -3,7 +3,7 @@ using RabbitMQ.Client;
 
 namespace EsbcProducer.Infra.RabbitMq.Providers.Impl
 {
-    public class ChannelProvider : IChannelProvider, IDisposable
+    public class ChannelProvider : IChannelProvider
     {
         private readonly IConnectionProvider _connectionProvider;
         private IModel _channel;

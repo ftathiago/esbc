@@ -4,7 +4,7 @@ using RabbitMQ.Client;
 
 namespace EsbcProducer.Infra.RabbitMq.Providers.Impl
 {
-    public class ConnectionProvider : IConnectionProvider, IDisposable
+    public class ConnectionProvider : IConnectionProvider
     {
         private readonly QueueConfiguration _queueConfiguration;
         private IConnection _connection;
