@@ -1,12 +1,12 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using EsbcProducer.Fixtures;
+﻿using EsbcProducer.Fixtures;
 using EsbcProducer.Infra.RabbitMq.Producers.Impl;
 using EsbcProducer.Infra.RabbitMq.Providers;
 using FluentAssertions;
 using Moq;
 using RabbitMQ.Client;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace EsbcProducerTest.Infra.RabbitMq.Producers
@@ -21,7 +21,7 @@ namespace EsbcProducerTest.Infra.RabbitMq.Producers
         public ProducerWrappedTest(MessageFixture messageFixture)
         {
             _channelProvider = new Mock<IChannelProvider>(MockBehavior.Strict);
-            _channel = new Mock<IModel>(MockBehavior.Strict);
+            _channel = new Mock<IModel>();
             _messageFixture = messageFixture;
         }
 
@@ -37,16 +37,11 @@ namespace EsbcProducerTest.Infra.RabbitMq.Producers
             var token = new CancellationToken(false);
             var payload = _messageFixture.GetMessageString();
             ReadOnlyMemory<byte> payloadBytes = _messageFixture.GetMesageUTF8();
+            var basicProperties = new Mock<IBasicProperties>().Object;
             _channel
                 .Setup(c => c.QueueDeclare(QueueName, true, false, false, null))
                 .Returns(new QueueDeclareOk(QueueName, 0, 0))
                 .Verifiable();
-            _channel
-                .Setup(c => c.BasicPublish(
-                     QueueName,
-                     "tests",
-                     null as IBasicProperties,
-                     payloadBytes));
             _channelProvider
                 .Setup(cp => cp.GetChannel())
                 .Returns(_channel.Object);

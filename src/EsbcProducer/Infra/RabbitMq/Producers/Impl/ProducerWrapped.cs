@@ -1,5 +1,4 @@
-﻿using EsbcProducer.Infra.Configurations;
-using EsbcProducer.Infra.RabbitMq.Providers;
+﻿using EsbcProducer.Infra.RabbitMq.Providers;
 using RabbitMQ.Client;
 using System.Text;
 using System.Threading;
