@@ -19,7 +19,7 @@ services:
     networks:
       - esbc_net
     environment:
-      - QueueConfiguration__HostName=127.0.0.1
+      - QueueConfiguration__HostName=rabbitmq
       - QueueConfiguration__Port=8080
       - QueueConfiguration__User=admin
       - QueueConfiguration__Password=admin

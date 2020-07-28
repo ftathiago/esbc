@@ -37,11 +37,11 @@ namespace EsbcProducer.Worker
             }
         }
 
-        private async Task DoWork(IMessageProducer proletarian, CancellationToken stoppingToken)
+        private async Task DoWork(IMessageProducer messageProducer, CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                await proletarian.DoWork(stoppingToken);
+                await messageProducer.DoWork(stoppingToken);
                 await Task.Delay(5000, stoppingToken);
             }
         }
