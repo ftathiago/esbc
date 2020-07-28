@@ -20,7 +20,7 @@ services:
       - esbc_net
     environment:
       - QueueConfiguration__HostName=rabbitmq
-      - QueueConfiguration__Port=8080
+      - QueueConfiguration__Port=5672
       - QueueConfiguration__User=admin
       - QueueConfiguration__Password=admin
       - QueueConfiguration__QueueMechanism=RabbitMq
