@@ -15,27 +15,23 @@ namespace EsbcProducer.Infra.RabbitMq.Producers.Impl
             _channelProvider = channelProvider;
         }
 
-        public Task<bool> Send(string queueName, string payload, CancellationToken stoppingToken = default)
-        {
-            return Task.Run<bool>(() =>
-            {
-                var body = Encoding.UTF8.GetBytes(payload);
+        public Task<bool> Send(string queueName, string payload, CancellationToken stoppingToken = default) =>
+            Task.Run<bool>(
+                () =>
+                {
+                    var body = Encoding.UTF8.GetBytes(payload);
 
-                var channel = _channelProvider.GetChannel();
-                channel.QueueDeclare(
-                    queue: queueName,
-                    durable: true,
-                    exclusive: false,
-                    autoDelete: false,
-                    arguments: null);
+                    var channel = _channelProvider
+                        .QueueDeclare(queueName)
+                        .GetChannel();
 
-                channel.BasicPublish(
-                    exchange: queueName,
-                    routingKey: "tests",
-                    basicProperties: null,
-                    body: body);
-                return true;
-            });
-        }
+                    channel.BasicPublish(
+                        exchange: queueName,
+                        routingKey: "tests",
+                        basicProperties: null,
+                        body: body);
+                    return true;
+                },
+                stoppingToken);
     }
 }

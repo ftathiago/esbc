@@ -43,6 +43,9 @@ namespace EsbcProducerTest.Infra.RabbitMq.Producers
                 .Returns(new QueueDeclareOk(QueueName, 0, 0))
                 .Verifiable();
             _channelProvider
+                .Setup(cp => cp.QueueDeclare(QueueName))
+                .Returns(_channelProvider.Object);
+            _channelProvider
                 .Setup(cp => cp.GetChannel())
                 .Returns(_channel.Object);
             var producer = new ProducerWrapped(_channelProvider.Object);

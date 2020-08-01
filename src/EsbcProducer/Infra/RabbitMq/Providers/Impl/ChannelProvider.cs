@@ -18,6 +18,18 @@ namespace EsbcProducer.Infra.RabbitMq.Providers.Impl
             _channel.Dispose();
         }
 
+        public IChannelProvider QueueDeclare(string queueName)
+        {
+            var channel = GetChannel();
+            channel.QueueDeclare(
+                    queue: queueName,
+                    durable: true,
+                    exclusive: false,
+                    autoDelete: false,
+                    arguments: null);
+            return this;
+        }
+
         public IModel GetChannel()
         {
             if (_channel is null)
