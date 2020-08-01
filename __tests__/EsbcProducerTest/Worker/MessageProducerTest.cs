@@ -9,12 +9,12 @@ using Xunit;
 
 namespace EsbcProducerTest.Worker
 {
-    public class ProletarianTest : IDisposable
+    public class MessageProducerTest : IDisposable
     {
         private const bool Canceled = true;
         private readonly Mock<IProducer> _producer;
 
-        public ProletarianTest()
+        public MessageProducerTest()
         {
             _producer = new Mock<IProducer>(MockBehavior.Strict);
         }
