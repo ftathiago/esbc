@@ -27,7 +27,12 @@ namespace EsbcProducer.Infra.Configurations
 
         public static QueueConfiguration From(IConfiguration configuration)
         {
-            var port = int.Parse(configuration["QueueConfiguration:Port"]);
+            var configPort = configuration["QueueConfiguration:Port"];
+            var port = 0;
+            if (!string.IsNullOrEmpty(configPort))
+            {
+                port = int.Parse(configPort);
+            }
 
             return new QueueConfiguration
             {

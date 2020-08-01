@@ -4,6 +4,6 @@
     {
         Unknown,
         Element1,
-        Element2
+        Element2,
     }
 }
