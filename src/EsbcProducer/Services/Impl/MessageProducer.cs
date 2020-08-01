@@ -3,13 +3,13 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace EsbcProducer.Worker.Impl
+namespace EsbcProducer.Services.Impl
 {
-    public class Proletarian : IProletarian
+    public class MessageProducer : IMessageProducer
     {
         private readonly IProducer _producer;
 
-        public Proletarian(IProducer producer)
+        public MessageProducer(IProducer producer)
         {
             _producer = producer;
         }
@@ -21,14 +21,13 @@ namespace EsbcProducer.Worker.Impl
                 return;
             }
 
-            await _producer
-                .Send(
-                    "test_topic",
-                    new
-                    {
-                        message = $"Producing test at {DateTimeOffset.Now}",
-                    },
-                    stoppingToken);
+            await _producer.Send(
+                "test_topic",
+                new
+                {
+                    message = $"Producing test at {DateTimeOffset.Now}",
+                },
+                stoppingToken);
         }
     }
 }

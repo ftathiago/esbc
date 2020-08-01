@@ -1,4 +1,4 @@
-﻿using EsbcProducer.Repositories;
+﻿using EsbcProducer.Extensions;
 using EsbcProducer.Worker;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,7 +22,7 @@ namespace EsbcProducer
             services
                 .AddControllers();
             services
-                .AddTransient<IProducer, EsbcProducer.Infra.Kafka.Producer>()
+                .AddDependencies(Configuration)
                 .AddHostedService<ProducerWorker>();
         }
 

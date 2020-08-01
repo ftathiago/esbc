@@ -1,8 +1,8 @@
 ﻿using Confluent.Kafka;
-using Microsoft.Extensions.Configuration;
+using EsbcProducer.Infra.Configurations;
 using System;
 
-namespace EsbcProducer.Infra.Kafka.Factories.Impl
+namespace EsbcProducer.Infra.Kafka.Providers.Impl
 {
     public class ProducerProvider :
         IProducerProvider,
@@ -12,17 +12,13 @@ namespace EsbcProducer.Infra.Kafka.Factories.Impl
         private bool disposedValue;
         private IProducer<Null, string> _producer;
 
-        public ProducerProvider(IConfiguration configuration)
+        public ProducerProvider(QueueConfiguration queueConfiguration)
         {
-            var bootstrapserver = configuration["Queue:Host"];
-            if (bootstrapserver.Equals(string.Empty))
-            {
-                throw new ArgumentException("There is not Queue host configured");
-            }
+            ValidateConfiguration(queueConfiguration);
 
             var producerConfig = new ProducerConfig
             {
-                BootstrapServers = $"{bootstrapserver}:9092",
+                BootstrapServers = $"{queueConfiguration.HostName}:{queueConfiguration.Port}",
                 RequestTimeoutMs = 5000,
             };
             _producerBuild = new ProducerBuilder<Null, string>(producerConfig);
@@ -55,6 +51,19 @@ namespace EsbcProducer.Infra.Kafka.Factories.Impl
                 }
 
                 disposedValue = true;
+            }
+        }
+
+        private void ValidateConfiguration(QueueConfiguration queueConfiguration)
+        {
+            if (queueConfiguration.HostName.Equals(string.Empty))
+            {
+                throw new ArgumentException("There is not Queue host configured");
+            }
+
+            if (queueConfiguration.Port <= 0)
+            {
+                throw new ArgumentException("There is not Port configured");
             }
         }
     }

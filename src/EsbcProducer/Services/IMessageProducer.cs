@@ -1,9 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace EsbcProducer.Worker
+namespace EsbcProducer.Services
 {
-    public interface IProletarian
+    public interface IMessageProducer
     {
         Task DoWork(CancellationToken stoppingToken);
     }
