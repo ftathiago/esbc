@@ -27,7 +27,7 @@ namespace EsbcProducer.Infra.QueueComponent.RabbitMq.Producers.Impl
 
                     channel.BasicPublish(
                         exchange: queueName,
-                        routingKey: "tests",
+                        routingKey: queueName,
                         basicProperties: null,
                         body: body);
                     return true;

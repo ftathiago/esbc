@@ -1,5 +1,4 @@
-﻿using System;
-using RabbitMQ.Client;
+﻿using RabbitMQ.Client;
 
 namespace EsbcProducer.Infra.QueueComponent.RabbitMq.Providers.Impl
 {
@@ -22,11 +21,11 @@ namespace EsbcProducer.Infra.QueueComponent.RabbitMq.Providers.Impl
         {
             var channel = GetChannel();
             channel.QueueDeclare(
-                    queue: queueName,
-                    durable: true,
-                    exclusive: false,
-                    autoDelete: false,
-                    arguments: null);
+                queue: queueName,
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null);
             return this;
         }
 
