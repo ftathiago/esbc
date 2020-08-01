@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using EsbcProducer.Fixtures;
+﻿using EsbcProducer.Fixtures;
 using EsbcProducer.Infra;
 using EsbcProducer.Infra.Configurations;
 using EsbcProducer.Infra.Providers;
@@ -9,6 +6,9 @@ using EsbcProducer.Infra.Wrappers;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace EsbcProducerTest.Infra

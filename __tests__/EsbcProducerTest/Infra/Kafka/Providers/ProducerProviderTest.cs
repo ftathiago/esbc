@@ -1,7 +1,6 @@
 ﻿using EsbcProducer.Infra.Configurations;
 using EsbcProducer.Infra.Kafka.Providers.Impl;
 using FluentAssertions;
-using Microsoft.Extensions.Configuration;
 using Moq;
 using System;
 using Xunit;
