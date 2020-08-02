@@ -8,6 +8,7 @@ namespace EsbcProducer.Services.Impl
     public class MessageProducer : IMessageProducer
     {
         private readonly IMessages _messages;
+        private int _messageNumber = 1;
 
         public MessageProducer(IMessages messages)
         {
@@ -24,8 +25,9 @@ namespace EsbcProducer.Services.Impl
             await _messages.Send(
                 new
                 {
-                    message = $"Producing test at {DateTimeOffset.Now}",
+                    message = $"Producing {_messageNumber} at {DateTimeOffset.Now}",
                 });
+            _messageNumber++;
         }
     }
 }

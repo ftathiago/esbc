@@ -1,16 +1,17 @@
-﻿using RabbitMQ.Client;
+﻿using EsbcProducer.Infra.QueueComponent.RabbitMq.Exceptions;
+using RabbitMQ.Client;
 
 namespace EsbcProducer.Infra.QueueComponent.RabbitMq.Providers.Impl
 {
     public class ChannelProvider : IChannelProvider
     {
-        private readonly IConnectionProvider _connectionProvider;
+        private readonly IRabbitMqConnectionKeeper _persisterConnection;
         private IModel _channel;
         private bool disposedValue;
 
-        public ChannelProvider(IConnectionProvider connectionProvider)
+        public ChannelProvider(IRabbitMqConnectionKeeper persisterConnection)
         {
-            _connectionProvider = connectionProvider;
+            _persisterConnection = persisterConnection;
         }
 
         public void Dispose()
@@ -35,8 +36,13 @@ namespace EsbcProducer.Infra.QueueComponent.RabbitMq.Providers.Impl
         {
             if (_channel is null)
             {
-                var connection = _connectionProvider.GetConnection();
-                _channel = connection.CreateModel();
+                var connected = _persisterConnection.TryConnect();
+                if (!connected)
+                {
+                    throw new RabbitMqException("Não foi possível estabelecer conexão com o RabbitMQ");
+                }
+
+                _channel = _persisterConnection.CreateModel();
             }
 
             return _channel;
@@ -51,7 +57,7 @@ namespace EsbcProducer.Infra.QueueComponent.RabbitMq.Providers.Impl
                     // Tarefa pendente: descartar o estado gerenciado (objetos gerenciados)
                 }
 
-                _channel.Dispose();
+                _channel?.Dispose();
                 disposedValue = true;
             }
         }
