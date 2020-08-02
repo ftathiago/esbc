@@ -4,6 +4,6 @@ namespace EsbcProducer.Repositories
 {
     public interface IMessages
     {
-        Task Send(object message);
+        Task Send(object payload);
     }
 }

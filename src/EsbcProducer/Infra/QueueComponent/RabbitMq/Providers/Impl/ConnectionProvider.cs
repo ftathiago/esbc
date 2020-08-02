@@ -1,5 +1,6 @@
 ﻿using EsbcProducer.Infra.QueueComponent.Configurations;
 using RabbitMQ.Client;
+using System;
 
 namespace EsbcProducer.Infra.QueueComponent.RabbitMq.Providers.Impl
 {
@@ -7,6 +8,7 @@ namespace EsbcProducer.Infra.QueueComponent.RabbitMq.Providers.Impl
     {
         private readonly QueueConfiguration _queueConfiguration;
         private IConnection _connection;
+        private bool disposedValue;
 
         public ConnectionProvider(QueueConfiguration queueConfiguration)
         {
@@ -15,7 +17,9 @@ namespace EsbcProducer.Infra.QueueComponent.RabbitMq.Providers.Impl
 
         public void Dispose()
         {
-            _connection.Dispose();
+            // Não altere este código. Coloque o código de limpeza no método 'Dispose(bool disposing)'
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
 
         public IConnection GetConnection()
@@ -27,6 +31,20 @@ namespace EsbcProducer.Infra.QueueComponent.RabbitMq.Providers.Impl
             }
 
             return _connection;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // Tarefa pendente: descartar o estado gerenciado (objetos gerenciados)
+                }
+
+                _connection.Dispose();
+                disposedValue = true;
+            }
         }
 
         private ConnectionFactory GetConnectionFactory() =>

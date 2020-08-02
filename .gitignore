@@ -439,3 +439,5 @@ DockerfileSolutionRestore.txt
 *.bat
 *.ps1
 *.zip
+
+.sonarqube

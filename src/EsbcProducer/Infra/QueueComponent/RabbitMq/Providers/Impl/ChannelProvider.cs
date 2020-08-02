@@ -6,6 +6,7 @@ namespace EsbcProducer.Infra.QueueComponent.RabbitMq.Providers.Impl
     {
         private readonly IConnectionProvider _connectionProvider;
         private IModel _channel;
+        private bool disposedValue;
 
         public ChannelProvider(IConnectionProvider connectionProvider)
         {
@@ -14,7 +15,8 @@ namespace EsbcProducer.Infra.QueueComponent.RabbitMq.Providers.Impl
 
         public void Dispose()
         {
-            _channel.Dispose();
+            Dispose(disposing: true);
+            System.GC.SuppressFinalize(this);
         }
 
         public IChannelProvider QueueDeclare(string queueName)
@@ -38,6 +40,20 @@ namespace EsbcProducer.Infra.QueueComponent.RabbitMq.Providers.Impl
             }
 
             return _channel;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // Tarefa pendente: descartar o estado gerenciado (objetos gerenciados)
+                }
+
+                _channel.Dispose();
+                disposedValue = true;
+            }
         }
     }
 }
