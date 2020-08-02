@@ -19,7 +19,9 @@ namespace EsbcProducer.Infra.QueueComponent.Kafka.Providers.Impl
             var producerConfig = new ProducerConfig
             {
                 BootstrapServers = $"{queueConfiguration.HostName}:{queueConfiguration.Port}",
-                RequestTimeoutMs = 5000,
+                RequestTimeoutMs = queueConfiguration.TimeoutMs,
+                MessageTimeoutMs = queueConfiguration.TimeoutMs,
+                MessageSendMaxRetries = queueConfiguration.RetryCount,
             };
             _producerBuild = new ProducerBuilder<Null, string>(producerConfig);
         }

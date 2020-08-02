@@ -1,4 +1,5 @@
-﻿using EsbcProducer.Infra.QueueComponent.RabbitMq.Providers;
+﻿using EsbcProducer.Infra.QueueComponent.RabbitMq.Exceptions;
+using EsbcProducer.Infra.QueueComponent.RabbitMq.Providers;
 using EsbcProducer.Infra.QueueComponent.RabbitMq.Providers.Impl;
 using FluentAssertions;
 using Moq;
@@ -12,19 +13,16 @@ namespace EsbcProducerTest.Infra.QueueComponent.RabbitMq.Providers
     public class ChannelProviderTest : IDisposable
     {
         private readonly Mock<IConnection> _connection;
-        private readonly Mock<IConnectionProvider> _connectionProvider;
+        private readonly Mock<IRabbitMqConnectionKeeper> _connectionProvider;
         private readonly Mock<IModel> _channel;
 
         public ChannelProviderTest()
         {
             _connection = new Mock<IConnection>(MockBehavior.Strict);
 
-            _connectionProvider = new Mock<IConnectionProvider>(MockBehavior.Strict);
+            _connectionProvider = new Mock<IRabbitMqConnectionKeeper>(MockBehavior.Strict);
 
             _channel = new Mock<IModel>(MockBehavior.Strict);
-            _channel
-                .Setup(c => c.Dispose())
-                .Verifiable();
         }
 
         public void Dispose()
@@ -38,13 +36,16 @@ namespace EsbcProducerTest.Infra.QueueComponent.RabbitMq.Providers
         public void ShouldCreateNewChannel()
         {
             // Given
-            _connection
+            _channel
+                .Setup(c => c.Dispose())
+                .Verifiable();
+            _connectionProvider
                 .Setup(c => c.CreateModel())
                 .Returns(_channel.Object)
                 .Verifiable();
             _connectionProvider
-                .Setup(cp => cp.GetConnection())
-                .Returns(_connection.Object)
+                .Setup(cp => cp.TryConnect())
+                .Returns(true)
                 .Verifiable();
             using var channelProvider = new ChannelProvider(_connectionProvider.Object);
 
@@ -59,13 +60,16 @@ namespace EsbcProducerTest.Infra.QueueComponent.RabbitMq.Providers
         public void ShouldCreateChannelOneTime()
         {
             // Given
-            _connection
+            _channel
+                .Setup(c => c.Dispose())
+                .Verifiable();
+            _connectionProvider
                 .Setup(c => c.CreateModel())
                 .Returns(_channel.Object)
                 .Verifiable();
             _connectionProvider
-                .Setup(cp => cp.GetConnection())
-                .Returns(_connection.Object)
+                .Setup(cp => cp.TryConnect())
+                .Returns(true)
                 .Verifiable();
             using var channelProvider = new ChannelProvider(_connectionProvider.Object);
 
@@ -74,8 +78,8 @@ namespace EsbcProducerTest.Infra.QueueComponent.RabbitMq.Providers
             var chanell2 = channelProvider.GetChannel();
 
             // Then
-            _connection.Verify(c => c.CreateModel(), Times.Once());
-            _connectionProvider.Verify(cp => cp.GetConnection(), Times.Once());
+            _connectionProvider.Verify(c => c.CreateModel(), Times.Once());
+            _connectionProvider.Verify(cp => cp.TryConnect(), Times.Once());
             channel.Should().Be(chanell2);
         }
 
@@ -93,13 +97,16 @@ namespace EsbcProducerTest.Infra.QueueComponent.RabbitMq.Providers
                 .Setup(c => c.QueueDeclare(QueueName, Durable, !Exclusive, !AutoDelete, Arguments))
                 .Returns(queueDeclareOk)
                 .Verifiable();
-            _connection
+            _channel
+                .Setup(c => c.Dispose())
+                .Verifiable();
+            _connectionProvider
                 .Setup(c => c.CreateModel())
                 .Returns(_channel.Object)
                 .Verifiable();
             _connectionProvider
-                .Setup(cp => cp.GetConnection())
-                .Returns(_connection.Object)
+                .Setup(cp => cp.TryConnect())
+                .Returns(true)
                 .Verifiable();
             using var channelProvider = new ChannelProvider(_connectionProvider.Object);
 
@@ -108,7 +115,27 @@ namespace EsbcProducerTest.Infra.QueueComponent.RabbitMq.Providers
 
             // Then
             expectedReturn.Should().Be(channelProvider);
-            _connectionProvider.Verify(cp => cp.GetConnection(), Times.Once());
+            _connectionProvider.Verify(cp => cp.TryConnect(), Times.Once());
+        }
+
+        [Fact]
+        public void ShouldThrowRabbitMqExceptionWhenCantConnect()
+        {
+            // Given
+            _connectionProvider
+                .Setup(cp => cp.TryConnect())
+                .Returns(false)
+                .Verifiable();
+            using var channelProvider = new ChannelProvider(_connectionProvider.Object);
+
+            // When
+            Action act = () =>
+            {
+                using var channel = channelProvider.GetChannel();
+            };
+
+            // Then
+            act.Should().ThrowExactly<RabbitMqException>();
         }
     }
 }

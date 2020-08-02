@@ -20,7 +20,7 @@ namespace EsbcProducer.Infra.Extensions
                 .AddScoped<IProducerProvider, ProducerProvider>()
                 .AddConfiguration(configuration)
                 .AddKafkaDependencies()
-                .AddRabbitMqDependencies();
+                .AddRabbitMqDependencies(QueueConfiguration.From(configuration));
 
         private static IServiceCollection AddConfiguration(
             this IServiceCollection services,

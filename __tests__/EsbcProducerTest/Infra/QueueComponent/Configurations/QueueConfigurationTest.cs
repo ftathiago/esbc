@@ -10,10 +10,12 @@ namespace EsbcProducerTest.Infra.QueueComponent.Configurations
 {
     public class QueueConfigurationTest : IDisposable
     {
-        private const string DefaultHostName = "localhost";
         private const string BasePath = "QueueConfiguration";
+        private const string DefaultHostName = "127.0.0.1";
         private const int DefaultPort = 9092;
+        private const int DefaultRetryCount = 5;
         private const QueueMechanism DefaultMechanism = QueueMechanism.Kafka;
+        private const int DefaultTimeoutMs = 5000;
         private readonly Mock<IConfiguration> _configuration;
 
         public QueueConfigurationTest()
@@ -38,7 +40,8 @@ namespace EsbcProducerTest.Infra.QueueComponent.Configurations
             queueConfig.HostName.Should().Be(DefaultHostName);
             queueConfig.Port.Should().Be(DefaultPort);
             queueConfig.QueueMechanism.Should().Be(DefaultMechanism);
-            queueConfig.KafkaConfiguration.Should().NotBeNull();
+            queueConfig.RetryCount.Should().Be(DefaultRetryCount);
+            queueConfig.TimeoutMs.Should().Be(DefaultTimeoutMs);
         }
 
         [Fact]
@@ -65,12 +68,16 @@ namespace EsbcProducerTest.Infra.QueueComponent.Configurations
                 .Returns(password)
                 .Verifiable();
             _configuration
+                .Setup(c => c[$"{BasePath}:RetryCount"])
+                .Returns(DefaultRetryCount.ToString())
+                .Verifiable();
+            _configuration
                 .Setup(c => c[$"{BasePath}:QueueMechanism"])
                 .Returns(nameof(QueueMechanism.Kafka))
                 .Verifiable();
             _configuration
-                .Setup(c => c[$"{BasePath}:KafkaConfiguration:RequestTimeoutMs"])
-                .Returns(requestTimeout.ToString())
+                .Setup(c => c[$"{BasePath}:TimeoutMs"])
+                .Returns(DefaultTimeoutMs.ToString())
                 .Verifiable();
 
             // When
@@ -82,7 +89,7 @@ namespace EsbcProducerTest.Infra.QueueComponent.Configurations
             queueConfig.User.Should().Be(userName);
             queueConfig.Password.Should().Be(password);
             queueConfig.QueueMechanism.Should().Be(QueueMechanism.Kafka);
-            queueConfig.KafkaConfiguration.RequestTimeoutMs.Should().Be(requestTimeout);
+            queueConfig.TimeoutMs.Should().Be(DefaultTimeoutMs);
         }
 
         [Fact]
@@ -109,12 +116,16 @@ namespace EsbcProducerTest.Infra.QueueComponent.Configurations
                 .Returns(password)
                 .Verifiable();
             _configuration
+                .Setup(c => c[$"{BasePath}:RetryCount"])
+                .Returns(DefaultRetryCount.ToString())
+                .Verifiable();
+            _configuration
                 .Setup(c => c[$"{BasePath}:QueueMechanism"])
                 .Returns(nameof(QueueMechanism.Kafka))
                 .Verifiable();
             _configuration
-                .Setup(c => c[$"{BasePath}:KafkaConfiguration:RequestTimeoutMs"])
-                .Returns(requestTimeout.ToString())
+                .Setup(c => c[$"{BasePath}:TimeoutMs"])
+                .Returns(DefaultTimeoutMs.ToString())
                 .Verifiable();
 
             // When
@@ -125,8 +136,9 @@ namespace EsbcProducerTest.Infra.QueueComponent.Configurations
             queueConfig.Port.Should().Be(DefaultPort);
             queueConfig.User.Should().Be(userName);
             queueConfig.Password.Should().Be(password);
+            queueConfig.RetryCount.Should().Be(DefaultRetryCount);
             queueConfig.QueueMechanism.Should().Be(QueueMechanism.Kafka);
-            queueConfig.KafkaConfiguration.RequestTimeoutMs.Should().Be(requestTimeout);
+            queueConfig.TimeoutMs.Should().Be(DefaultTimeoutMs);
         }
     }
 }
