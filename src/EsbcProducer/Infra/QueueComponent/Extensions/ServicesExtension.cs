@@ -5,27 +5,32 @@ using EsbcProducer.Infra.QueueComponent.Abstractions.Providers;
 using EsbcProducer.Infra.QueueComponent.Abstractions.Providers.Impl;
 using EsbcProducer.Infra.QueueComponent.Configurations;
 using EsbcProducer.Infra.QueueComponent.RabbitMq.Extensions;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
-namespace EsbcProducer.Infra.Extensions
+namespace EsbcProducer.Infra.QueueComponent.Extensions
 {
     public static class ServicesExtension
     {
-        public static IServiceCollection AddInfraDependencies(
+        public static IServiceCollection AddQueueDependencies(
             this IServiceCollection services,
-            IConfiguration configuration) =>
+            Action<QueueConfiguration> configure) =>
             services
+                .AddConfiguration(configure)
                 .AddScoped<IProducer, Producer>()
                 .AddScoped<IProducerProvider, ProducerProvider>()
-                .AddConfiguration(configuration)
                 .AddKafkaDependencies()
-                .AddRabbitMqDependencies(QueueConfiguration.From(configuration));
+                .AddRabbitMqDependencies();
 
         private static IServiceCollection AddConfiguration(
             this IServiceCollection services,
-            IConfiguration configuration) =>
-            services
-                .AddSingleton<QueueConfiguration>(QueueConfiguration.From(configuration));
+            Action<QueueConfiguration> configure)
+        {
+            var queueConfiguration = new QueueConfiguration();
+            configure(queueConfiguration);
+
+            return services
+                .AddSingleton<QueueConfiguration>(queueConfiguration);
+        }
     }
 }

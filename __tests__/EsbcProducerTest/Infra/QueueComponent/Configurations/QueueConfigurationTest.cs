@@ -140,5 +140,55 @@ namespace EsbcProducerTest.Infra.QueueComponent.Configurations
             queueConfig.QueueMechanism.Should().Be(QueueMechanism.Kafka);
             queueConfig.TimeoutMs.Should().Be(DefaultTimeoutMs);
         }
+
+        [Fact]
+        public void ShouldLoadConfigurationToAExistentInstance()
+        {
+            // Given
+            const string userName = "username";
+            const string password = "password";
+            var requestTimeout = (int)TimeSpan.FromSeconds(10).TotalMilliseconds;
+            _configuration
+                .Setup(c => c[$"{BasePath}:HostName"])
+                .Returns(DefaultHostName)
+                .Verifiable();
+            _configuration
+                .Setup(c => c[$"{BasePath}:Port"])
+                .Returns(DefaultPort.ToString())
+                .Verifiable();
+            _configuration
+                .Setup(c => c[$"{BasePath}:User"])
+                .Returns(userName)
+                .Verifiable();
+            _configuration
+                .Setup(c => c[$"{BasePath}:Password"])
+                .Returns(password)
+                .Verifiable();
+            _configuration
+                .Setup(c => c[$"{BasePath}:RetryCount"])
+                .Returns(DefaultRetryCount.ToString())
+                .Verifiable();
+            _configuration
+                .Setup(c => c[$"{BasePath}:QueueMechanism"])
+                .Returns(nameof(QueueMechanism.Kafka))
+                .Verifiable();
+            _configuration
+                .Setup(c => c[$"{BasePath}:TimeoutMs"])
+                .Returns(DefaultTimeoutMs.ToString())
+                .Verifiable();
+            var queueConfig = new QueueConfiguration();
+
+            // When
+            queueConfig.LoadFrom(_configuration.Object);
+
+            // Then
+            queueConfig.HostName.Should().Be(DefaultHostName);
+            queueConfig.Port.Should().Be(DefaultPort);
+            queueConfig.User.Should().Be(userName);
+            queueConfig.Password.Should().Be(password);
+            queueConfig.RetryCount.Should().Be(DefaultRetryCount);
+            queueConfig.QueueMechanism.Should().Be(QueueMechanism.Kafka);
+            queueConfig.TimeoutMs.Should().Be(DefaultTimeoutMs);
+        }
     }
 }

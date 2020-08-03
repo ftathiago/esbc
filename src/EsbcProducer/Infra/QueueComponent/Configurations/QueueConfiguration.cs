@@ -36,15 +36,18 @@ namespace EsbcProducer.Infra.QueueComponent.Configurations
         public QueueMechanism QueueMechanism { get; set; }
 
         public static QueueConfiguration From(IConfiguration configuration) =>
-            new QueueConfiguration
-            {
-                HostName = configuration["QueueConfiguration:HostName"] ?? DefaultHostName,
-                Port = configuration["QueueConfiguration:Port"].ParseToInt(DefaultPort),
-                User = configuration["QueueConfiguration:User"],
-                Password = configuration["QueueConfiguration:Password"],
-                RetryCount = configuration["QueueConfiguration:RetryCount"].ParseToInt(DefaultRetryCount),
-                TimeoutMs = configuration["QueueConfiguration:TimeoutMs"].ParseToInt(DefaultTimeoutMs),
-                QueueMechanism = configuration["QueueConfiguration:QueueMechanism"].ParseToEnum<QueueMechanism>(),
-            };
+            new QueueConfiguration().LoadFrom(configuration);
+
+        public QueueConfiguration LoadFrom(IConfiguration configuration)
+        {
+            HostName = configuration["QueueConfiguration:HostName"] ?? DefaultHostName;
+            Port = configuration["QueueConfiguration:Port"].ParseToInt(DefaultPort);
+            User = configuration["QueueConfiguration:User"];
+            Password = configuration["QueueConfiguration:Password"];
+            RetryCount = configuration["QueueConfiguration:RetryCount"].ParseToInt(DefaultRetryCount);
+            TimeoutMs = configuration["QueueConfiguration:TimeoutMs"].ParseToInt(DefaultTimeoutMs);
+            QueueMechanism = configuration["QueueConfiguration:QueueMechanism"].ParseToEnum<QueueMechanism>();
+            return this;
+        }
     }
 }
