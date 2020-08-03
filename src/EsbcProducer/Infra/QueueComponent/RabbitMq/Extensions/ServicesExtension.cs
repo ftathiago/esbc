@@ -11,19 +11,21 @@ namespace EsbcProducer.Infra.QueueComponent.RabbitMq.Extensions
     public static class ServicesExtension
     {
         public static IServiceCollection AddRabbitMqDependencies(
-            this IServiceCollection services,
-            QueueConfiguration queueConfiguration) =>
+            this IServiceCollection services) =>
             services
                 .AddScoped<IChannelProvider, ChannelProvider>()
                 .AddScoped<IRabbitMqProducerWrapped, ProducerWrapped>()
                 .AddScoped<IRabbitMqConnectionKeeper, RabbitMqConnectionKeeper>()
-                .AddTransient<IConnectionFactory>((_) =>
-                    new ConnectionFactory
+                .AddTransient<IConnectionFactory>((services) =>
+                {
+                    var queueConfig = services.GetService<QueueConfiguration>();
+                    return new ConnectionFactory
                     {
-                        HostName = queueConfiguration.HostName,
-                        Port = queueConfiguration.Port,
-                        UserName = queueConfiguration.User,
-                        Password = queueConfiguration.Password,
-                    });
+                        HostName = queueConfig.HostName,
+                        Port = queueConfig.Port,
+                        UserName = queueConfig.User,
+                        Password = queueConfig.Password,
+                    };
+                });
     }
 }
