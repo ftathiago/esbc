@@ -37,7 +37,7 @@ namespace EsbcProducer.Services.Impl
             await _messages.Send(
                 new
                 {
-                    message = $"{_messageConfig.MessageText}-{_messageNumber} at {DateTimeOffset.Now}",
+                    message = $"{_messageConfig.MessageText} - {_messageNumber} at {DateTimeOffset.Now}",
                 });
             _messageNumber++;
 

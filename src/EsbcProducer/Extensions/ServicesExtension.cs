@@ -18,6 +18,6 @@ namespace EsbcProducer.Extensions
                 .AddScoped<IMessageProducer, MessageProducer>()
                 .AddScoped<IMessages, Messages>()
                 .AddInfraDependencies(configuration)
-                .Configure<MessageConfig>(configuration.GetSection("MessageConfig"));
+                .Configure<MessageConfig>(configuration.GetSection(MessageConfig.SectionName));
     }
 }

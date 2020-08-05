@@ -2,8 +2,22 @@
 {
     public class MessageConfig
     {
-        public string MessageText { get; set; }
+        public const string SectionName = "MessageConfig";
+        private const string DefaultMessage = "No message";
+        private const int DefaultWaitingTime = 5000;
+        private string messageText;
+        private int waitingTime;
 
-        public int WaitingTime { get; set; }
+        public string MessageText
+        {
+            get { return messageText; }
+            set { messageText = value ?? DefaultMessage; }
+        }
+
+        public int WaitingTime
+        {
+            get { return waitingTime; }
+            set { waitingTime = value <= 0 ? DefaultWaitingTime : value; }
+        }
     }
 }
