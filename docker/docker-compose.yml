@@ -25,6 +25,8 @@ services:
       - QueueConfiguration__Password=admin
       - QueueConfiguration__QueueMechanism=RabbitMq
       - QueueConfiguration__KafkaConfiguration__RequestTimeoutMs=5000
+      - MessageConfig__MessageText="Configurable message"
+      - MessageConfig__WaitingTime=5000
     ports:
       - 5000:80
     depends_on:

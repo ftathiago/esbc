@@ -42,7 +42,6 @@ namespace EsbcProducer.Worker
             while (!stoppingToken.IsCancellationRequested)
             {
                 await messageProducer.DoWork(stoppingToken);
-                await Task.Delay(5000, stoppingToken);
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using EsbcProducer.Infra.Extensions;
+﻿using EsbcProducer.Configurations;
+using EsbcProducer.Infra.Extensions;
 using EsbcProducer.Infra.MessagesRepository;
 using EsbcProducer.Repositories;
 using EsbcProducer.Services;
@@ -16,6 +17,7 @@ namespace EsbcProducer.Extensions
             services
                 .AddScoped<IMessageProducer, MessageProducer>()
                 .AddScoped<IMessages, Messages>()
-                .AddInfraDependencies(configuration);
+                .AddInfraDependencies(configuration)
+                .Configure<MessageConfig>(configuration.GetSection(MessageConfig.SectionName));
     }
 }

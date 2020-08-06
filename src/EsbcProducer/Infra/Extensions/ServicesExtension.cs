@@ -1,5 +1,4 @@
-﻿using EsbcProducer.Infra.QueueComponent.Abstractions;
-using EsbcProducer.Infra.QueueComponent.Extensions;
+﻿using EsbcProducer.Infra.QueueComponent.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
