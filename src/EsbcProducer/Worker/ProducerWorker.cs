@@ -26,9 +26,9 @@ namespace EsbcProducer.Worker
                 try
                 {
                     using var scope = _services.CreateScope();
-                    var proletarian = scope.ServiceProvider.GetRequiredService<IMessageProducer>();
+                    var messageProducer = scope.ServiceProvider.GetRequiredService<IMessageProducer>();
                     _logger.LogInformation($"Worker running at: {DateTimeOffset.Now}");
-                    await DoWork(proletarian, stoppingToken);
+                    await DoWork(messageProducer, stoppingToken);
                 }
                 catch (Exception exception)
                 {
@@ -41,7 +41,7 @@ namespace EsbcProducer.Worker
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                await messageProducer.DoWork(stoppingToken);
+                await messageProducer.ProduceMessages(stoppingToken);
             }
         }
     }

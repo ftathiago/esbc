@@ -1,15 +1,16 @@
-﻿using EsbcProducer.Infra.QueueComponent.Abstractions;
-using EsbcProducer.Repositories;
+﻿using EsbcProducer.Brokers;
+using EsbcProducer.Infra.Brokers.Models;
+using EsbcProducer.Infra.QueueComponent.Abstractions;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace EsbcProducer.Infra.MessagesRepository
+namespace EsbcProducer.Infra.Brokers
 {
-    public class Messages : IMessages
+    public class MessageBroker : IMessageBroker
     {
         private readonly IProducer _producer;
 
-        public Messages(IProducer producer)
+        public MessageBroker(IProducer producer)
         {
             _producer = producer;
         }

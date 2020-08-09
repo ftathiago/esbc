@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace EsbcProducer.Repositories
+namespace EsbcProducer.Brokers
 {
-    public interface IMessages
+    public interface IMessageBroker
     {
         Task Send(object payload);
     }

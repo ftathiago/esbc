@@ -5,6 +5,6 @@ namespace EsbcProducer.Services
 {
     public interface IMessageProducer
     {
-        Task DoWork(CancellationToken stoppingToken);
+        Task ProduceMessages(CancellationToken stoppingToken);
     }
 }

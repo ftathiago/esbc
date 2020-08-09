@@ -1,5 +1,5 @@
-﻿using EsbcProducer.Configurations;
-using EsbcProducer.Repositories;
+﻿using EsbcProducer.Brokers;
+using EsbcProducer.Configurations;
 using EsbcProducer.Services.Impl;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
@@ -14,12 +14,12 @@ namespace EsbcProducerTest.Worker
     public class MessageProducerTest : IDisposable
     {
         private const bool Canceled = true;
-        private readonly Mock<IMessages> _messages;
+        private readonly Mock<IMessageBroker> _messages;
         private readonly Mock<IOptionsSnapshot<MessageConfig>> _messageConfig;
 
         public MessageProducerTest()
         {
-            _messages = new Mock<IMessages>(MockBehavior.Strict);
+            _messages = new Mock<IMessageBroker>(MockBehavior.Strict);
             _messageConfig = new Mock<IOptionsSnapshot<MessageConfig>>();
             _messageConfig
                 .SetupGet(mc => mc.Value)
@@ -45,7 +45,7 @@ namespace EsbcProducerTest.Worker
                 .Verifiable();
             var messageProducer = new MessageProducer(_messages.Object, _messageConfig.Object);
 
-            await messageProducer.DoWork(cancellationToken);
+            await messageProducer.ProduceMessages(cancellationToken);
         }
 
         [Fact]
@@ -54,7 +54,7 @@ namespace EsbcProducerTest.Worker
             var cancellationToken = new CancellationToken(Canceled);
             var messageProducer = new MessageProducer(_messages.Object, _messageConfig.Object);
 
-            await messageProducer.DoWork(cancellationToken);
+            await messageProducer.ProduceMessages(cancellationToken);
         }
 
         [Fact]
@@ -66,7 +66,7 @@ namespace EsbcProducerTest.Worker
                 .Verifiable();
             var messageProducer = new MessageProducer(_messages.Object, _messageConfig.Object);
 
-            Func<Task> act = async () => await messageProducer.DoWork(cancellationToken);
+            Func<Task> act = async () => await messageProducer.ProduceMessages(cancellationToken);
 
             act.Should().Throw<Exception>();
         }

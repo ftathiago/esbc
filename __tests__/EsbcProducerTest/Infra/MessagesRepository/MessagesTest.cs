@@ -2,7 +2,8 @@
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using EsbcProducer.Infra.MessagesRepository;
+using EsbcProducer.Infra.Brokers;
+using EsbcProducer.Infra.Brokers.Models;
 using EsbcProducer.Infra.QueueComponent.Abstractions;
 using FluentAssertions;
 using Moq;
@@ -32,7 +33,7 @@ namespace EsbcProducerTest.Infra.MessagesRepository
                 .Callback<string, object, CancellationToken>((s, message, ct) => messageSent = (Message)message)
                 .ReturnsAsync(true)
                 .Verifiable();
-            var messages = new Messages(_producer.Object);
+            var messages = new MessageBroker(_producer.Object);
 
             // When
             await messages.Send(message);

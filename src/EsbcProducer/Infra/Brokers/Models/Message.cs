@@ -1,4 +1,4 @@
-﻿namespace EsbcProducer.Infra.MessagesRepository
+﻿namespace EsbcProducer.Infra.Brokers.Models
 {
     public class Message
     {

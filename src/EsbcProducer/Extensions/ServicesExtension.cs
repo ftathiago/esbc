@@ -1,7 +1,7 @@
-﻿using EsbcProducer.Configurations;
+﻿using EsbcProducer.Brokers;
+using EsbcProducer.Configurations;
+using EsbcProducer.Infra.Brokers;
 using EsbcProducer.Infra.Extensions;
-using EsbcProducer.Infra.MessagesRepository;
-using EsbcProducer.Repositories;
 using EsbcProducer.Services;
 using EsbcProducer.Services.Impl;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +16,7 @@ namespace EsbcProducer.Extensions
             IConfiguration configuration) =>
             services
                 .AddScoped<IMessageProducer, MessageProducer>()
-                .AddScoped<IMessages, Messages>()
+                .AddScoped<IMessageBroker, MessageBroker>()
                 .AddInfraDependencies(configuration)
                 .Configure<MessageConfig>(configuration.GetSection(MessageConfig.SectionName));
     }

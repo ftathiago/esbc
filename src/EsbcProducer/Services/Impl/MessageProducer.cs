@@ -1,5 +1,5 @@
-﻿using EsbcProducer.Configurations;
-using EsbcProducer.Repositories;
+﻿using EsbcProducer.Brokers;
+using EsbcProducer.Configurations;
 using Microsoft.Extensions.Options;
 using System;
 using System.Threading;
@@ -9,32 +9,28 @@ namespace EsbcProducer.Services.Impl
 {
     public class MessageProducer : IMessageProducer
     {
-        private readonly IMessages _messages;
+        private readonly IMessageBroker _broker;
         private readonly MessageConfig _messageConfig;
         private int _messageNumber = 1;
 
         public MessageProducer(
-            IMessages messages,
+            IMessageBroker broker,
             IOptionsSnapshot<MessageConfig> messageConfig)
         {
-            _messages = messages;
+            _broker = broker;
             _messageConfig = messageConfig.Value;
         }
 
-        public async Task DoWork(CancellationToken stoppingToken)
+        public async Task ProduceMessages(CancellationToken stoppingToken)
         {
             if (stoppingToken.IsCancellationRequested)
             {
                 return;
             }
 
-            var wait = 5000;
-            if (_messageConfig.WaitingTime > 0)
-            {
-                wait = _messageConfig.WaitingTime;
-            }
+            var wait = GetWaitingTime();
 
-            await _messages.Send(
+            await _broker.Send(
                 new
                 {
                     message = $"{_messageConfig.MessageText} - {_messageNumber} at {DateTimeOffset.Now}",
@@ -43,5 +39,10 @@ namespace EsbcProducer.Services.Impl
 
             await Task.Delay(wait, stoppingToken);
         }
+
+        private int GetWaitingTime() =>
+            _messageConfig.WaitingTime > 0
+                ? _messageConfig.WaitingTime
+                : 5000;
     }
 }
