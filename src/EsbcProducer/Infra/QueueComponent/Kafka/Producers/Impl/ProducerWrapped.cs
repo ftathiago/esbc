@@ -23,7 +23,6 @@ namespace EsbcProducer.Infra.QueueComponent.Kafka.Producers.Impl
             string payload,
             CancellationToken stoppingToken = default)
         {
-            _logger.LogInformation($"Producing message: {payload}");
             var message = GetMessage(payload);
             try
             {
