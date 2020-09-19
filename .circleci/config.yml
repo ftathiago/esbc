@@ -16,10 +16,6 @@ jobs:
       - run:
           name: "Install project dependencies"
           command: dotnet.exe restore
-      - save_cache:
-          paths:
-            - C:\Users\circleci\.nuget\packages
-          key: dotnet-packages-v1-{{ checksum "__tests__/EsbcProducer/EsbcProducer.csproj" }}
       - run:
           name: "Run Application Tests"
           command: dotnet.exe test -v n --results-directory:test_coverage --collect:"Code Coverage"

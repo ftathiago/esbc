@@ -11,7 +11,7 @@ using Xunit;
 
 namespace EsbcProducerTest.Infra.QueueComponent.RabbitMq.Providers
 {
-    public class RabbitMqConnectionKeeperTest : IDisposable
+    public sealed class RabbitMqConnectionKeeperTest : IDisposable
     {
         private const int MinimumTimeout = 1;
         private readonly QueueConfiguration _queueConfig;
@@ -43,9 +43,9 @@ namespace EsbcProducerTest.Infra.QueueComponent.RabbitMq.Providers
         {
             // When
             var rabbitMqConnectionKeeper = new RabbitMqConnectionKeeper(
-                            _queueConfig,
-                            _connectionFactory.Object,
-                            _logger.Object);
+                _queueConfig,
+                _connectionFactory.Object,
+                _logger.Object);
 
             // Then
             rabbitMqConnectionKeeper.Should().NotBeNull();

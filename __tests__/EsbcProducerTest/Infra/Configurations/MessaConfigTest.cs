@@ -14,10 +14,11 @@ namespace EsbcProducerTest.Infra.Configurations
         public void ShouldReturnDefaultValueWhenMessageIsNull()
         {
             // Given
-            var messageConfig = new MessageConfig();
-
-            // When
-            messageConfig.MessageText = (string)null;
+            var messageConfig = new MessageConfig
+            {
+                // When
+                MessageText = (string)null,
+            };
 
             // Then
             messageConfig.Should().NotBeNull();
@@ -27,10 +28,11 @@ namespace EsbcProducerTest.Infra.Configurations
         public void ShouldReturnDefaultValueWhenMessageIsEmpty()
         {
             // Given
-            var messageConfig = new MessageConfig();
-
-            // When
-            messageConfig.MessageText = string.Empty;
+            var messageConfig = new MessageConfig
+            {
+                // When
+                MessageText = string.Empty,
+            };
 
             // Then
             messageConfig.Should().NotBe(string.Empty);
@@ -40,10 +42,11 @@ namespace EsbcProducerTest.Infra.Configurations
         public void ShouldReturnConfiguredMessage()
         {
             // Given
-            var messageConfig = new MessageConfig();
-
-            // When
-            messageConfig.MessageText = MessageText;
+            var messageConfig = new MessageConfig
+            {
+                // When
+                MessageText = MessageText,
+            };
 
             // Then
             messageConfig.Should().NotBe(MessageText);
@@ -53,10 +56,11 @@ namespace EsbcProducerTest.Infra.Configurations
         public void ShouldKeepValuesGreatherThanZero()
         {
             // Given
-            var messageConfig = new MessageConfig();
-
-            // When
-            messageConfig.WaitingTime = MinimumTimeMs;
+            var messageConfig = new MessageConfig
+            {
+                // When
+                WaitingTime = MinimumTimeMs,
+            };
 
             // Then
             messageConfig.WaitingTime.Should().Be(MinimumTimeMs);
@@ -66,10 +70,11 @@ namespace EsbcProducerTest.Infra.Configurations
         public void ShouldReturnDefaultTimeWhenIsZeroEquals()
         {
             // Given
-            var messageConfig = new MessageConfig();
-
-            // When
-            messageConfig.WaitingTime = 0;
+            var messageConfig = new MessageConfig
+            {
+                // When
+                WaitingTime = 0,
+            };
 
             // Then
             messageConfig.WaitingTime.Should().Be(DefaultTimeMs);
@@ -79,10 +84,11 @@ namespace EsbcProducerTest.Infra.Configurations
         public void ShouldReturnDefaultTimeWhenIsLessThanZero()
         {
             // Given
-            var messageConfig = new MessageConfig();
-
-            // When
-            messageConfig.WaitingTime = -1;
+            var messageConfig = new MessageConfig
+            {
+                // When
+                WaitingTime = -1,
+            };
 
             // Then
             messageConfig.WaitingTime.Should().Be(DefaultTimeMs);

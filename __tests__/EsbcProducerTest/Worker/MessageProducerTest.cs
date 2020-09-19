@@ -11,7 +11,7 @@ using Xunit;
 
 namespace EsbcProducerTest.Worker
 {
-    public class MessageProducerTest : IDisposable
+    public sealed class MessageProducerTest : IDisposable
     {
         private const bool Canceled = true;
         private readonly Mock<IMessageBroker> _messages;

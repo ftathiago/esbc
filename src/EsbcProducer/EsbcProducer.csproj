@@ -1,13 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
+
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>dotnet-Producer-4AE9DBFB-2EE7-44A4-899C-277A143F4A69</UserSecretsId>
     <CodeAnalysisRuleSet>..\..\CodeAnalyzerRules.ruleset</CodeAnalysisRuleSet>
     <ProjectGuid>5466D04B-4DCC-476C-BD91-E191E9F62532</ProjectGuid>
   </PropertyGroup>
+
   <ItemGroup>
     <None Include="appsettings.json" CopyToPublishDirectory="Always" />
   </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Confluent.Kafka" Version="1.5.0" />
     <PackageReference Include="MediatR" Version="8.0.2" />
@@ -24,7 +27,9 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
+
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
+
 </Project>

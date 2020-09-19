@@ -8,7 +8,7 @@ using Xunit;
 
 namespace EsbcProducerTest.Infra.QueueComponent.Configurations
 {
-    public class QueueConfigurationTest : IDisposable
+    public sealed class QueueConfigurationTest : IDisposable
     {
         private const string BasePath = "QueueConfiguration";
         private const string DefaultHostName = "127.0.0.1";

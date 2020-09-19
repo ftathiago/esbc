@@ -10,7 +10,7 @@ using Xunit;
 
 namespace EsbcProducerTest.Infra.QueueComponent.RabbitMq.Providers
 {
-    public class ChannelProviderTest : IDisposable
+    public sealed class ChannelProviderTest : IDisposable
     {
         private readonly Mock<IConnection> _connection;
         private readonly Mock<IRabbitMqConnectionKeeper> _connectionProvider;

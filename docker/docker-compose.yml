@@ -86,7 +86,7 @@ services:
       - rmqdata:/var/lib/rabbitmq/
       - rmqlog:/var/log/rabbitmq/
     environment:
-      RABBITMQ_ERLANG_COOKIE: "cookie_frase_secret_long_enough_i_guess_maybe_loooong"
+      RABBITMQ_ERLANG_COOKIE: "85435960-a3bd-4259-9aee-21acb99aa3e4"
       RABBITMQ_DEFAULT_USER: "admin"
       RABBITMQ_DEFAULT_PASS: "admin"
     ports:

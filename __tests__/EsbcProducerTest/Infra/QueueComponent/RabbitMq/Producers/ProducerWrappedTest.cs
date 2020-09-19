@@ -11,7 +11,7 @@ using Xunit;
 
 namespace EsbcProducerTest.Infra.QueueComponent.RabbitMq.Producers
 {
-    public class ProducerWrappedTest : IClassFixture<MessageFixture>, IDisposable
+    public sealed class ProducerWrappedTest : IClassFixture<MessageFixture>, IDisposable
     {
         private const string QueueName = "QueueName";
         private readonly Mock<IChannelProvider> _channelProvider;

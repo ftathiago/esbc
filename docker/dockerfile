@@ -1,17 +1,29 @@
-﻿FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS dotnet_restore
+﻿FROM mcr.microsoft.com/dotnet/core/aspnet:5.0 AS base
+RUN mkdir /app
+WORKDIR /app
+
+FROM mcr.microsoft.com/dotnet/core/sdk:5.0 AS dotnet_restore
 WORKDIR /app
 COPY "Esbc.sln" "Esbc.sln"
 COPY "__tests__/EsbcProducer/EsbcProducer.csproj" "__tests__/EsbcProducer/EsbcProducer.csproj"
 COPY "src/EsbcProducer/EsbcProducer.csproj" "src/EsbcProducer/EsbcProducer.csproj"
 RUN dotnet restore --packages ./pkg "Esbc.sln"
-RUN COPY . .
-RUN dotnet test
+
+FROM dotnet_restore AS dotnet_code
+WORKDIR /app
+COPY . . 
 RUN dotnet publish -c Release -o dist
+
+FROM dotnet_code AS test
+WORKDIR /app
+RUN dotnet test --no-restore
+
+FROM base AS final
+WORKDIR /app
+COPY --from=dotnet_code /app/dist .
 ENV ASPNETCORE_ENVIRONMENT=Production
 ENV ASPNETCORE_URLS=http://+:80
-ENTRYPOINT ["dotnet", "./dist/EsbcProducer.dll"]
+ENTRYPOINT ["dotnet", "EsbcProducer.dll"]
 
 # COPY --from=dotnet_code /app/idle.sh .
 # ENTRYPOINT ["sh","/app/idle.sh"]
-
-

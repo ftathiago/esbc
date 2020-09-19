@@ -14,7 +14,7 @@ using Xunit;
 
 namespace EsbcProducerTest.Infra.QueueComponent.Impl
 {
-    public class ProducerTest : IClassFixture<MessageFixture>, IDisposable
+    public sealed class ProducerTest : IClassFixture<MessageFixture>, IDisposable
     {
         private const string TopicName = "topicName";
         private readonly Mock<ILogger<Producer>> _logger;

@@ -1,8 +1,8 @@
-﻿FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS base
+﻿FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
 RUN mkdir /app
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS dotnet_restore
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS dotnet_restore
 WORKDIR /app
 COPY "Esbc.sln" "Esbc.sln"
 COPY "__tests__/EsbcProducerTest/EsbcProducerTest.csproj" "__tests__/EsbcProducerTest/EsbcProducerTest.csproj"

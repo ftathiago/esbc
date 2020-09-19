@@ -4,10 +4,15 @@
     ],
     "cSpell.ignoreWords": [
         "hsts",
+        "kfkdata",
         "rabbitmq",
+        "rmqdata",
+        "rmqlog",
         "use",
         "use hsts",
-        "xunit"
+        "xunit",
+        "zoodata",
+        "zoodatalog"
     ],
     "files.encoding": "utf8bom"
 }

@@ -12,7 +12,7 @@ using Xunit;
 
 namespace EsbcProducerTest.Infra.QueueComponent.Kafka.Producers
 {
-    public class ProducerTest : IClassFixture<MessageFixture>, IDisposable
+    public sealed class ProducerTest : IClassFixture<MessageFixture>, IDisposable
     {
         private const string TopicName = "topic_name";
         private readonly MessageFixture _message;

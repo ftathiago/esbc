@@ -7,7 +7,7 @@ using Xunit;
 
 namespace EsbcProducerTest.Infra.QueueComponent.Kafka.Providers
 {
-    public class ProducerProviderTest : IDisposable
+    public sealed class ProducerProviderTest : IDisposable
     {
         private readonly QueueConfiguration _configuration;
 

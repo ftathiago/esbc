@@ -10,7 +10,7 @@ using Xunit;
 
 namespace EsbcProducerTest.Infra.QueueComponent.Providers
 {
-    public class ProducerProviderTest : IDisposable
+    public sealed class ProducerProviderTest : IDisposable
     {
         private readonly IKafkaProducerWrapped _kafkaProducerStub;
         private readonly IRabbitMqProducerWrapped _rabbitProducerStub;
