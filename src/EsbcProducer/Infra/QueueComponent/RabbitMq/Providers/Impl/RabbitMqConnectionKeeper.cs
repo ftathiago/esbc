@@ -35,7 +35,6 @@ namespace EsbcProducer.Infra.QueueComponent.RabbitMq.Providers.Impl
 
         public void Dispose()
         {
-            // Não altere este código. Coloque o código de limpeza no método 'Dispose(bool disposing)'
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
@@ -85,19 +84,18 @@ namespace EsbcProducer.Infra.QueueComponent.RabbitMq.Providers.Impl
                 if (disposing)
                 {
                     // Tarefa pendente: descartar o estado gerenciado (objetos gerenciados)
+                    try
+                    {
+                        _connection?.Dispose();
+                    }
+                    catch (IOException ex)
+                    {
+                        _logger.LogCritical(ex.ToString());
+                    }
                 }
 
                 // Tarefa pendente: liberar recursos não gerenciados (objetos não gerenciados) e substituir o finalizador
                 // Tarefa pendente: definir campos grandes como nulos
-                try
-                {
-                    _connection?.Dispose();
-                }
-                catch (IOException ex)
-                {
-                    _logger.LogCritical(ex.ToString());
-                }
-
                 disposedValue = true;
             }
         }

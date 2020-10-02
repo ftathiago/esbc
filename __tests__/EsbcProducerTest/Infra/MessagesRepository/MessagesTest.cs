@@ -1,13 +1,11 @@
-﻿using System.Reflection;
-using System;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using EsbcProducer.Infra.Brokers;
+﻿using EsbcProducer.Infra.Brokers;
 using EsbcProducer.Infra.Brokers.Models;
 using EsbcProducer.Infra.QueueComponent.Abstractions;
 using FluentAssertions;
 using Moq;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace EsbcProducerTest.Infra.MessagesRepository
